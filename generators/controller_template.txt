@@ -1,9 +1,25 @@
 <?php
 
-class {0} extends BaseController {
+class {name} extends BaseController {{
 
-	public function __construct($model) {
-		parent::__construct($model)
-	}
+    public function __construct($model) {{
+        parent::__construct($model);
+    }}
 
-}
+    public function getAction($request) {{
+        
+        if (isset($request->urlElements[2])) {{
+            return $request->urlElements[2];
+        }} else {{
+            return $this->handleQuery($request);
+        }}
+        
+    }}
+    
+    {post_method}
+    
+    {put_method}
+    
+    {delete_method}
+
+}}

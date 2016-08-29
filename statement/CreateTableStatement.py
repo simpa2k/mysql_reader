@@ -33,4 +33,10 @@ class CreateTableStatement:
             columns[index] = column.strip()
 
         self.columns = columns
+#        parse_column(self.columns)
+
+#    def parse_column(self, column):
+#        column_name = column.split(' ')[0]
+#        print(column_name)
+
     
