@@ -1,0 +1,56 @@
+create table contactperson(
+	phonenumber VARCHAR(20) NOT NULL,
+	name VARCHAR(60) NOT NULL,
+	PRIMARY KEY(phonenumber, name));
+
+create table description(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	content TEXT NOT NULL);
+
+create table venue(
+	name VARCHAR(40) NOT NULL PRIMARY KEY,
+	city VARCHAR(20),
+	address TEXT,
+	webpage TEXT);
+
+create table gig(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	date DATE NOT NULL,
+	time TIME NOT NULL,
+	ticketlink TEXT,
+	info TEXT,
+	venue_name VARCHAR(40) NOT NULL,
+	price INT,
+	UINIQUE KEY(date, time),
+	FOREIGN KEY(venue_name) REFERENCES venue(name));
+
+create table member(
+	firstname VARCHAR(60) NOT NULL,
+	lastname VARCHAR(60) NOT NULL,
+	instrument VARCHAR(100) NOT NULL,
+	PRIMARY KEY(firstname, lastname, instrument));
+
+create table newsitem(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	date DATE NOT NULL,
+	content TEXT NOT NULL);
+
+create table quote(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	review TEXT NOT NULL,
+	source TEXT);
+
+create table quotesection(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	quote_id INT,
+	FOREIGN KEY(quote_id) REFERENCES quote(id));
+
+create table users(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	username VARCHAR(20) NOT NULL,
+	password VARCHAR(64) NOT NULL,
+	token VARCHAR(64));
+
+create table users_session(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	hash VARCHAR(68) NOT NULL);

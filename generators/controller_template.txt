@@ -1,0 +1,9 @@
+<?php
+
+class {0} extends BaseController {
+
+	public function __construct($model) {
+		parent::__construct($model)
+	}
+
+}
