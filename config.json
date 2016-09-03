@@ -46,8 +46,7 @@
 			"delete": "true",
 			"fields": {
 				"id": "INT NOT NULL AUTO_INCREMENT",
-				"date": "DATE NOT NULL",
-				"time": "TIME NOT NULL",
+				"datetime": "DATETIME NOT NULL",
 				"ticketlink": "TEXT",
 				"info": "TEXT",
 				"venue_name": "VARCHAR(40) NOT NULL",
@@ -55,7 +54,7 @@
 
 			},
 			"primary key": ["id"],
-			"unique key": ["date", "time"],
+			"unique key": ["datetime"],
 			"foreign key": [
 				{
 					"key": "venue_name",

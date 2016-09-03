@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
 
-class JsonGenerator(metaclass=ABCMeta):
+class Generator(metaclass=ABCMeta):
 
-    def __init__(self, json):
-        self.json = json
-
+    def __init__(self):
+        pass
+    
     @abstractmethod
     def generate(self):
         pass
