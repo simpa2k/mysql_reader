@@ -1,0 +1,18 @@
+<?php
+
+class {name} extends BaseModel {{
+
+    {get_method}
+
+    public function getAll() {{
+
+        return $this->get();
+        
+    }}
+    
+    {insert_method}
+
+    {update_method}
+
+    {delete_method}
+}}

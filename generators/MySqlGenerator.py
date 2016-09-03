@@ -1,3 +1,4 @@
+import os
 from abc import ABCMeta, abstractmethod
 from .Generator import Generator
 
@@ -5,15 +6,6 @@ class MySqlGenerator(Generator):
 
     def __init__(self, table_name, fields, primary_key, unique_key, foreign_key):
         
-#        self.table_name = json['name']
-#        self.fields = json['fields']
-#        self.primary_key = json['primary key']
-#
-#        try:
-#            self.unique_key = json['unique key']
-#            self.foreign_key = json['foreign key']
-#        except KeyError:
-#            pass
         self.table_name = table_name
         self.fields = fields
         self.primary_key = primary_key
@@ -79,18 +71,9 @@ class MySqlGenerator(Generator):
         if self.foreign_key != None:
             sql += self.construct_foreign_keys()
 
-#        try:
-#            sql += self.construct_unique_key()
-#        except AttributeError:
-#            pass
-#
-#        try:
-#            sql += self.construct_foreign_keys()
-#        except AttributeError:
-#            pass
-
         sql += ");\n"
 
+        os.makedirs('mysql', exist_ok=True)
         with open('mysql/statements.sql', 'a') as statement_file:
             statement_file.write(sql)
 
