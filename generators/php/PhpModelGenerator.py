@@ -1,21 +1,23 @@
-import os 
-from abc import ABCMeta, abstractmethod
-from generators.PhpGenerator import PhpGenerator
-from generators.PhpMethod import PhpMethod
+import os
+
+from generators.php.PhpGenerator import PhpGenerator
+
 from generators.MethodFormatter import MethodFormatter
+from generators.php.PhpMethod import PhpMethod
+
 
 class PhpModelGenerator(PhpGenerator):
 
-    def __init__(self, table_name, plural, post, put, delete, foreign_key):
-        super().__init__(table_name, plural, post, put, delete)
-        self.foreign_key = foreign_key
+    def __init__(self, data):
+        super().__init__(data)
+        self.foreign_keys = data['foreign keys']
         self.base_method_body = "$this->getDB->{operation}('" + self.table_name + "', {parameters});"
         self.construct_method_signatures_and_bodies()
 
     def list_foreign_tables(self):
        tables = self.table_name 
         
-       for foreign_key in self.foreign_key:
+       for foreign_key in self.foreign_keys:
            tables += ", {foreign_table}".format(foreign_table=foreign_key.foreign_table)
 
        return tables
@@ -25,7 +27,7 @@ class PhpModelGenerator(PhpGenerator):
 
        key_reference_pairs = ""
        first = True
-       for index, foreign_key in enumerate(self.foreign_key):
+       for index, foreign_key in enumerate(self.foreign_keys):
            if first:
                first = False
            else:
@@ -46,7 +48,7 @@ class PhpModelGenerator(PhpGenerator):
        return get_method_body
 
     def construct_get_method_bodies(self):
-        if self.foreign_key != None:
+        if self.foreign_keys is not None:
             self.get_method_body = self.construct_foreign_key()
         else:
             get_method_body = self.base_method_body.split(';')[0]
@@ -78,7 +80,7 @@ class PhpModelGenerator(PhpGenerator):
                                                           parameters="$where") if self.delete else self.unimplementedMethodPlaceholder
 
     def generate(self):
-        with open('generators/model_template.txt', 'r') as model_template:
+        with open('generators/php/templates/model_template.txt', 'r') as model_template:
             data = model_template.read()
 
             class_name = self.construct_name('Model')
@@ -95,7 +97,7 @@ class PhpModelGenerator(PhpGenerator):
 
             data = data.format(name=class_name, get_method=get_method, insert_method=insert_method, update_method=update_method, delete_method=delete_method)
 
-            directory = 'php/models/'
+            directory = 'php/classes/models/'
             os.makedirs(directory, exist_ok=True)
 
             with open(directory + class_name + '.php', 'w') as model_file:

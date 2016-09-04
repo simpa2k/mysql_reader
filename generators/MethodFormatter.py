@@ -1,4 +1,4 @@
-class MethodFormatter():
+class MethodFormatter:
 
     def __init__(self):
         self.tokens = {
@@ -7,13 +7,13 @@ class MethodFormatter():
                 ';': {"indents": 0}
                 }
     
-    def insertTabs(self, tabs, indents):
+    def insert_tabs(self, tabs, indents):
         for i in range(indents):
             tabs += "\t"
 
         return tabs
 
-    def deleteTabs(self, tabs, dedents):
+    def delete_tabs(self, tabs, dedents):
         for i in range(0, dedents, -1):
             tabs = tabs[: len(tabs) - 1]
 
@@ -21,21 +21,21 @@ class MethodFormatter():
 
     def prettify(self, method):
         
-        prettifiedMethod = ""
+        prettified_method = ""
 
         tabs = "\t"
         for i, c in enumerate(method):
             if i + 1 < len(method):
                 next = method[i + 1]
                 if next in self.tokens and self.tokens[next]["indents"] < 0:
-                    tabs = self.deleteTabs(tabs, self.tokens[next]["indents"])
-                    prettifiedMethod += c + "\n" + tabs.expandtabs(4)
+                    tabs = self.delete_tabs(tabs, self.tokens[next]["indents"])
+                    prettified_method += c + "\n" + tabs.expandtabs(4)
                 elif c in self.tokens and self.tokens[c]["indents"] >= 0:
-                    tabs = self.insertTabs(tabs, self.tokens[c]["indents"])
-                    prettifiedMethod += c + "\n" + tabs.expandtabs(4)
+                    tabs = self.insert_tabs(tabs, self.tokens[c]["indents"])
+                    prettified_method += c + "\n" + tabs.expandtabs(4)
                 else:
-                    prettifiedMethod += c
-            else: prettifiedMethod += c
+                    prettified_method += c
+            else: prettified_method += c
 
-        return prettifiedMethod 
+        return prettified_method
             

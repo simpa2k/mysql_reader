@@ -1,0 +1,37 @@
+<?php
+session_start();
+
+$GLOBALS['config'] = array(
+    'mysql' => array(
+        'host'      => '{host}',
+        'username'  => '{username}',
+        'password'  => '{password}',
+        'db'        => '{db}'
+    ),
+    'session' => array(
+        'session_name' => 'user',
+        'token_name'   => 'token'
+    )
+);
+
+spl_autoload_register(function($class) {{
+
+    if(preg_match('/[a-zA-Z]+Controller$/', $class)) {{
+
+        require_once 'classes/controllers/' . $class . '.php';
+
+    }} elseif(preg_match('/[a-zA-Z]+Model$/', $class)) {{
+
+        require_once 'classes/models/' . $class . '.php';
+
+    }} elseif(preg_match('/[a-zA-Z]+View$/', $class)) {{
+
+        require_once 'classes/views/' . $class . '.php';
+
+    }} else {{
+
+        require_once 'classes/' . $class . '.php';
+
+    }}
+
+}});

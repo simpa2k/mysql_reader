@@ -1,4 +1,10 @@
 {
+	"config": {
+		"host": "127.0.0.1",
+		"username": "root",
+		"password": "r10HoCV98",
+		"db": "vilde_new"
+	},
 	"tables": [
 		{
 			"name": "contactperson",

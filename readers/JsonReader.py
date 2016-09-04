@@ -1,79 +1,68 @@
 import json
 
-from abc import ABCMeta, abstractmethod
-
-from .Reader import Reader
 from .ForeignKey import ForeignKey
+from .Reader import Reader
 
-from generators.MySqlGenerator import MySqlGenerator
-#from generators.PhpGenerator import PhpGenerator 
-from generators.PhpControllerGenerator import PhpControllerGenerator 
-from generators.PhpModelGenerator import PhpModelGenerator 
-from threading import Thread
 
 class JsonReader(Reader):
 
     def __init__(self, path):
         super().__init__(path)
+        self.tables = []
+        self.config = {}
 
     def read(self):
         with open(self.path, 'r') as config:
             raw_data = config.read()
             json_data = json.loads(raw_data)
 
-            self.run_threads(json_data['tables'])
+            self.run_threaded_reader_task(json_data['tables'])
+            self.read_config(json_data['config'])
 
-    def read_table(self, table):
-        self.start_mysql_generator(table)
-        self.start_php_generator(table)
-    
-    def start_mysql_generator(self, table):
-        table_name = table['name']
-        columns = table['fields']
-        primary_key = table['primary key']
-        unique_key = table['unique key'] if 'unique key' in table else None
-        foreign_key = table['foreign key'] if 'foreign key' in table else None
+            self.join_threads()
 
-        mysqlGenerator = MySqlGenerator(table_name, 
-                                        columns, 
-                                        primary_key, 
-                                        unique_key, 
-                                        foreign_key)
-        mysqlGenerator.generate()
+            return {"config": self.config, "tables": self.tables}
 
     def instantiate_foreign_keys(self, foreign_keys):
         instantiated_foreign_keys = []
 
         for foreign_key in foreign_keys:
-            foreign_key = ForeignKey(foreign_key)
-            instantiated_foreign_keys.append(foreign_key)
+            instantiated_foreign_keys.append(ForeignKey(foreign_key))
 
         return instantiated_foreign_keys
 
-    def start_php_generator(self, table):
+    def reader_task(self, table):
         table_name = table['name']
-        plural = self.evaluatesToTrue(table['plural'])
-        post = self.evaluatesToTrue(table['post'])
-        put = self.evaluatesToTrue(table['put'])
-        delete = self.evaluatesToTrue(table['delete'])
+
+        plural = self.evaluates_to_true(table['plural'])
+        post = self.evaluates_to_true(table['post'])
+        put = self.evaluates_to_true(table['put'])
+        delete = self.evaluates_to_true(table['delete'])
+        columns = table['fields']
+        primary_key = table['primary key']
+        unique_key = table['unique key'] if 'unique key' in table else None
         foreign_keys = self.instantiate_foreign_keys(table['foreign key']) if 'foreign key' in table else None
 
-        phpControllerGenerator = PhpControllerGenerator(table_name,
-                                                        plural,
-                                                        post,
-                                                        put,
-                                                        delete)
-        phpControllerGenerator.generate()
+        self.tables.append({
+                "table name": table_name,
+                "plural": plural,
+                "post": post,
+                "put": put,
+                "delete": delete,
+                "columns": columns,
+                "primary key": primary_key,
+                "unique key": unique_key,
+                "foreign keys": foreign_keys
+                })
 
-        phpModelGenerator = PhpModelGenerator(table_name,
-                                                   plural,
-                                                   post,
-                                                   put,
-                                                   delete,
-                                                   foreign_keys)
-        phpModelGenerator.generate()
+    def read_config(self, config):
+        self.config = {
+            "host": config["host"],
+            "username": config["username"],
+            "password": config["password"],
+            "db": config["db"]
+        }
 
-
-
+    
 
 

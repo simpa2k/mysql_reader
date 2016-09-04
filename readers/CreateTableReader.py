@@ -1,7 +1,8 @@
-from abc import ABCMeta, abstractmethod
-from .Reader import Reader
-from generators.PhpGenerator import PhpGenerator
 import re
+
+from generators.php.PhpGenerator import PhpGenerator
+from .Reader import Reader
+
 
 class CreateTableReader(Reader):
 
@@ -16,13 +17,9 @@ class CreateTableReader(Reader):
                 data = file.read()
                 statements = data.split(';')
 
-                self.run_threads(statements)
+                self.run_threaded_reader_task(statements)
                 
-#                for statement in statements:
-#                    thread = Thread(None, self.read_table(statement))
-#                    thread.start()
-
-    def read_table(self, statement):
+    def reader_task(self, statement):
         self.start_php_generator(statement)
 
     def match_regex(self, pattern, string):

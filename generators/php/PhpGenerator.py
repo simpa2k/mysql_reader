@@ -1,15 +1,15 @@
 from abc import ABCMeta, abstractmethod
-from .Generator import Generator
+from generators.Generator import Generator
 
 class PhpGenerator(Generator):
     
-    def __init__(self, table_name, plural, post, put, delete):
-
-        self.table_name = table_name
-        self.plural = plural
-        self.post = post
-        self.put = put
-        self.delete = delete
+    def __init__(self, data):
+        self.table_name = data['table name'] 
+        self.plural = data['plural']
+        self.post = data['post']
+        self.put = data['put'] 
+        self.delete = data['delete']
+        self.primary_key = data['primary key']
         self.unimplementedMethodPlaceholder = '/*Not implemented*/'
 
     def construct_name(self, suffix):

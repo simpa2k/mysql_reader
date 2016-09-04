@@ -1,10 +1,12 @@
 import re
 
+
 class ForeignKey():
 
     def __init__(self, foreign_key):
         self.key = foreign_key['key']
-        
+        self.reference = foreign_key['reference']
+
         pattern = "(.*)\((.*)\)"
         match = re.search(pattern, foreign_key['reference'])
 
