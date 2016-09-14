@@ -1,5 +1,7 @@
 <?php
 
+require_once('core/init.php');
+
 class {name} extends BaseController {{
 
     public function __construct($model) {{

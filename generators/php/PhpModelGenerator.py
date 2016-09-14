@@ -11,7 +11,7 @@ class PhpModelGenerator(PhpGenerator):
     def __init__(self, data):
         super().__init__(data)
         self.foreign_keys = data['foreign keys']
-        self.base_method_body = "$this->getDB->{operation}('" + self.table_name + "', {parameters});"
+        self.base_method_body = "return $this->getDB()->{operation}({parameters});"
         self.construct_method_signatures_and_bodies()
 
     def list_foreign_tables(self):
@@ -33,7 +33,7 @@ class PhpModelGenerator(PhpGenerator):
            else:
                key_reference_pairs += ", "
 
-           key_reference_pairs += "{index} => ('{key}', '{reference}')".format(index=index, key=foreign_key.key, reference=foreign_key.foreign_column)
+           key_reference_pairs += "{index} => array('{key}', '{reference}')".format(index=index, key=foreign_key.key, reference=foreign_key.foreign_column)
 
        return references.format(array_items=key_reference_pairs)
        
@@ -42,12 +42,17 @@ class PhpModelGenerator(PhpGenerator):
        tables = self.list_foreign_tables() 
        key_reference_pairs = self.list_foreign_references()
 
-       get_method_body = "$action = 'SELECT *';$table = '{joined_tables}';$joinCondition = {join_condition};return ".format(joined_tables=tables, join_condition=key_reference_pairs)
-       get_method_body = get_method_body + self.base_method_body.format(operation="action", parameters="$action, $table, $joinCondition")
+       get_method_body = "$action = 'SELECT *';$table = '{joined_tables}';$joinCondition = {join_condition};".format(joined_tables=tables, join_condition=key_reference_pairs)
+       get_method_body = get_method_body + self.base_method_body.format(operation="action", parameters="$action, $table, $where, $joinCondition")
 
        return get_method_body
 
+    def construct_get_all_method(self):
+        return "return $this->getDB()->getAll('{table_name}')->results();".format(table_name=self.table_name);
+
     def construct_get_method_bodies(self):
+        self.get_all_method_body = self.construct_get_all_method()
+
         if self.foreign_keys is not None:
             self.get_method_body = self.construct_foreign_key()
         else:
@@ -65,19 +70,22 @@ class PhpModelGenerator(PhpGenerator):
         self.delete_method_signature = base_method_signature.format(operation=delete_operation, parameters="$where")
 
         self.construct_get_method_bodies()
-        self.get_method_signature = base_method_signature.format(operation="get", parameters="$where")
+
+        if(self.foreign_keys is None):
+            self.get_method_signature = base_method_signature.format(operation="get", parameters="$where")
+        else:
+            self.get_method_signature = base_method_signature.format(operation="get", parameters="$where = array()")
+
+        self.get_all_method_signature = base_method_signature.format(operation="getAll", parameters="")
 
         self.insert_method_body = self.base_method_body.format(operation=insert_operation,
-                                                          table_name=self.table_name, 
-                                                          parameters="$fields") if self.post else self.unimplementedMethodPlaceholder
+                                                          parameters="'" + self.table_name + "', $fields") if self.post else self.unimplementedMethodPlaceholder
 
         self.update_method_body = self.base_method_body.format(operation=update_operation, 
-                                                          table_name=self.table_name, 
-                                                          parameters="$primaryKey, $fields") if self.put else self.unimplementedMethodPlaceholder
+                                                          parameters="'" + self.table_name + "', $primaryKey, $fields") if self.put else self.unimplementedMethodPlaceholder
 
         self.delete_method_body = self.base_method_body.format(operation=delete_operation, 
-                                                          table_name=self.table_name, 
-                                                          parameters="$where") if self.delete else self.unimplementedMethodPlaceholder
+                                                          parameters="'" + self.table_name + "', $where") if self.delete else self.unimplementedMethodPlaceholder
 
     def generate(self):
         with open('generators/php/templates/model_template.txt', 'r') as model_template:
@@ -85,17 +93,19 @@ class PhpModelGenerator(PhpGenerator):
 
             class_name = self.construct_name('Model')
             get_method = PhpMethod(self.get_method_signature, self.get_method_body)
+            get_all_method = PhpMethod(self.get_all_method_signature, self.get_all_method_body)
             insert_method = PhpMethod(self.insert_method_signature, self.insert_method_body)
             update_method = PhpMethod(self.update_method_signature, self.update_method_body)
             delete_method = PhpMethod(self.delete_method_signature, self.delete_method_body)
 
             method_formatter = MethodFormatter()
             get_method = method_formatter.prettify(get_method.retrieve())
+            get_all_method = method_formatter.prettify(get_all_method.retrieve())
             insert_method = method_formatter.prettify(insert_method.retrieve())
             update_method = method_formatter.prettify(update_method.retrieve())
             delete_method = method_formatter.prettify(delete_method.retrieve())
 
-            data = data.format(name=class_name, get_method=get_method, insert_method=insert_method, update_method=update_method, delete_method=delete_method)
+            data = data.format(name=class_name, get_method=get_method, get_all_method=get_all_method, insert_method=insert_method, update_method=update_method, delete_method=delete_method)
 
             directory = 'php/classes/models/'
             os.makedirs(directory, exist_ok=True)

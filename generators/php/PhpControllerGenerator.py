@@ -14,7 +14,7 @@ class PhpControllerGenerator(PhpGenerator):
 
     def construct_put_method_body(self):
         column_variables = ""
-        primary_key_variable = "$primaryKey = '"
+        primary_key_variable = '$primaryKey = "'
         unset_statement = ""
         update_statement = "$this->getModel()->update($primaryKey, $request->parameters);"
 
@@ -30,7 +30,7 @@ class PhpControllerGenerator(PhpGenerator):
 
             unset_statement += "unset($request->parameters['{column}']);".format(column=column)
 
-        primary_key_variable += "';"
+        primary_key_variable += '";'
 
         return column_variables + primary_key_variable + unset_statement + update_statement
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once('core/init.php');
+
 abstract class BaseModel {
 
     private $db;
