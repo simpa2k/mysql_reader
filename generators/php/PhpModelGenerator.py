@@ -42,8 +42,9 @@ class PhpModelGenerator(PhpGenerator):
        tables = self.list_foreign_tables() 
        key_reference_pairs = self.list_foreign_references()
 
-       get_method_body = "$action = 'SELECT *';$table = '{joined_tables}';$joinCondition = {join_condition};".format(joined_tables=tables, join_condition=key_reference_pairs)
-       get_method_body = get_method_body + self.base_method_body.format(operation="action", parameters="$action, $table, $where, $joinCondition")
+       preparatory_statements = "$action = 'SELECT *';$table = '{joined_tables}';$joinCondition = {join_condition};".format(joined_tables=tables, join_condition=key_reference_pairs)
+       get_method_body = self.base_method_body.split(';')[0]
+       get_method_body = preparatory_statements + get_method_body.format(operation="action", parameters="$action, $table, $where, $joinCondition") + "->results();"
 
        return get_method_body
 
@@ -57,7 +58,7 @@ class PhpModelGenerator(PhpGenerator):
             self.get_method_body = self.construct_foreign_key()
         else:
             get_method_body = self.base_method_body.split(';')[0]
-            self.get_method_body = get_method_body.format(operation="get", parameters="$where") + "->results();"
+            self.get_method_body = get_method_body.format(operation="get", parameters="'" + self.table_name + "', $where") + "->results();"
 
     def construct_method_signatures_and_bodies(self):
         base_method_signature = "public function {operation}({parameters})"
