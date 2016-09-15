@@ -8,8 +8,8 @@ from generators.php.PhpMethod import PhpMethod
 
 class PhpModelGenerator(PhpGenerator):
 
-    def __init__(self, data):
-        super().__init__(data)
+    def __init__(self, data, output_directory):
+        super().__init__(data, output_directory)
         self.foreign_keys = data['foreign keys']
         self.base_method_body = "return $this->getDB()->{operation}({parameters});"
         self.construct_method_signatures_and_bodies()
@@ -92,7 +92,7 @@ class PhpModelGenerator(PhpGenerator):
         with open('generators/php/templates/model_template.txt', 'r') as model_template:
             data = model_template.read()
 
-            class_name = self.construct_name('Model')
+            class_name = self.construct_uppercase_name('Model')
             get_method = PhpMethod(self.get_method_signature, self.get_method_body)
             get_all_method = PhpMethod(self.get_all_method_signature, self.get_all_method_body)
             insert_method = PhpMethod(self.insert_method_signature, self.insert_method_body)
@@ -106,7 +106,13 @@ class PhpModelGenerator(PhpGenerator):
             update_method = method_formatter.prettify(update_method.retrieve())
             delete_method = method_formatter.prettify(delete_method.retrieve())
 
-            data = data.format(name=class_name, get_method=get_method, get_all_method=get_all_method, insert_method=insert_method, update_method=update_method, delete_method=delete_method)
+            data = data.format(table_name=self.table_name,
+                               name=class_name,
+                               get_method=get_method,
+                               get_all_method=get_all_method,
+                               insert_method=insert_method,
+                               update_method=update_method,
+                               delete_method=delete_method)
 
             directory = 'php/classes/models/'
             os.makedirs(directory, exist_ok=True)

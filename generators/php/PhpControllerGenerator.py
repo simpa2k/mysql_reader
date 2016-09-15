@@ -8,8 +8,8 @@ from generators.php.PhpMethod import PhpMethod
 
 class PhpControllerGenerator(PhpGenerator):
 
-    def __init__(self, data):
-        super().__init__(data)
+    def __init__(self, data, output_directory):
+        super().__init__(data, output_directory)
         self.construct_method_signatures_and_bodies()
 
     def construct_put_method_body(self):
@@ -49,20 +49,22 @@ class PhpControllerGenerator(PhpGenerator):
         with open('generators/php/templates/controller_template.txt', 'r') as controller_template:
             data = controller_template.read()
 
-            class_name = self.construct_name('Controller')
+            class_name = self.construct_uppercase_name('Controller')
             post_method = PhpMethod(self.post_method_signature, self.post_method_body)
             put_method = PhpMethod(self.put_method_signature, self.put_method_body)
             delete_method = PhpMethod(self.delete_method_signature, self.delete_method_body)
 
             method_formatter = MethodFormatter()
 
-            print(method_formatter.prettify(self.construct_put_method_body()))
-
             post_method = method_formatter.prettify(post_method.retrieve())
             put_method = method_formatter.prettify(put_method.retrieve())
             delete_method = method_formatter.prettify(delete_method.retrieve())
 
-            data = data.format(name=class_name, post_method=post_method, put_method=put_method, delete_method=delete_method)
+            data = data.format(table_name=self.table_name,
+                               name=class_name,
+                               post_method=post_method,
+                               put_method=put_method,
+                               delete_method=delete_method)
             
             directory = 'php/classes/controllers/'
             os.makedirs(directory, exist_ok=True)

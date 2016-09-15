@@ -11,6 +11,9 @@ class JsonReader(Reader):
         self.tables = []
         self.config = {}
 
+        #For angular
+        self.module_name = "coreModule"
+
     def read(self):
         with open(self.path, 'r') as config:
             raw_data = config.read()
@@ -52,7 +55,8 @@ class JsonReader(Reader):
                 "columns": columns,
                 "primary key": primary_key,
                 "unique key": unique_key,
-                "foreign keys": foreign_keys
+                "foreign keys": foreign_keys,
+                "module name": self.module_name
                 })
 
     def read_config(self, config):

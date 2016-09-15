@@ -2,6 +2,12 @@
 
 require_once('core/init.php');
 
+/**
+ *
+ * Base class for models
+ *
+ */
+
 abstract class BaseModel {
 
     private $db;

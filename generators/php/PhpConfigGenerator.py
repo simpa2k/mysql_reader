@@ -4,7 +4,8 @@ from generators.Generator import Generator
 
 
 class PhpConfigGenerator(Generator):
-    def __init__(self, config):
+    def __init__(self, config, output_directory):
+        super().__init__(output_directory)
         self.host = config['host']
         self.username = config['username']
         self.password = config['password']

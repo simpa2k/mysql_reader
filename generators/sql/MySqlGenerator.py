@@ -3,8 +3,9 @@ from generators.Generator import Generator
 
 
 class MySqlGenerator(Generator):
-    def __init__(self, table):
+    def __init__(self, table, output_directory):
 
+        super().__init__(output_directory)
         self.table_name = table['table name']
         self.fields = table['columns']
         self.primary_key = table['primary key']

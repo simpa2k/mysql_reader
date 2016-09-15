@@ -2,26 +2,69 @@
 
 require_once('core/init.php');
 
+/**
+ *
+ * Class for performing preparations
+ * on a RESTful request for data from the
+ * {table_name} table before it is
+ * passed on to a model.
+ *
+ */
+
 class {name} extends BaseController {{
 
     public function __construct($model) {{
         parent::__construct($model);
     }}
 
+    /**
+     *
+     * Method for handling GET
+     * requests. Currently does not handle
+     * more than one url element.
+     *
+     * @param Request $request An object representing a request to be handled.
+     *
+     */
+
     public function getAction($request) {{
         
         if (isset($request->urlElements[2])) {{
-            return $request->urlElements[2];
+            /* Not implemented */
         }} else {{
             return $this->handleQuery($request);
         }}
         
     }}
-    
+
+    /**
+     *
+     * Method for handling POST requests.
+     *
+     * @param Request $request An object representing a request to be handled.
+     *
+     */
+
     {post_method}
-    
+
+    /**
+     *
+     * Method for handling PUT requests.
+     *
+     * @param Request $request An object representing a request to be handled.
+     *
+     */
+
     {put_method}
-    
+
+    /**
+     *
+     * Method for handling DELETE requests.
+     *
+     * @param Request $request An object representing a request to be handled.
+     *
+     */
+
     {delete_method}
 
 }}

@@ -1,0 +1,10 @@
+var app = angular.module('{module_name}');
+
+app.factory('{factory_name}', [{stringified_dependencies}, function({dependencies}) {{
+
+    {endpoint}
+    var promise;
+
+    {factory_variable}
+
+}}]);
