@@ -1,0 +1,31 @@
+var app = angular.module('{module_name}');
+
+app.controller('{controller_name}', function({dependencies}) {{
+
+    {get_foreign_key_object_functions}
+
+    {object_to_be_sent}
+
+    {select_foreign_key_object_functions}
+
+    {set_put_state_function}
+
+    {set_post_state_function}
+
+    {send_foreign_key_object_functions}
+
+    {endpoint}
+
+    {refresh_function}
+
+    {post_object_function}
+
+    {put_object_function}
+
+    {delete_object_function}
+
+    {get_foreign_key_object_function_calls}
+
+    {set_state_function_call}
+
+}});

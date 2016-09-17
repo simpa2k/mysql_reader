@@ -16,5 +16,8 @@ class InputBasedGenerator(Generator):
         return lower_case_name[0].upper() + lower_case_name[1:]
 
     def construct_lowercase_name(self, suffix):
-        plural_formatted_table_name = self.table_name + 's' if self.plural else self.table_name
+        plural_formatted_table_name = self.construct_plural_name()
         return plural_formatted_table_name + suffix
+
+    def construct_plural_name(self):
+        return self.table_name + 's' if self.plural else self.table_name

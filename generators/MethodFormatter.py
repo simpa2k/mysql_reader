@@ -4,7 +4,8 @@ class MethodFormatter:
         self.tokens = {
                 '{': {"indents": 1},
                 '}': {"indents": -1},
-                ';': {"indents": 0}
+                ';': {"indents": 0},
+                '{}': {"indents": 0}
                 }
     
     def insert_tabs(self, tabs, indents):
@@ -25,16 +26,29 @@ class MethodFormatter:
 
         tabs = "\t"
         for i, c in enumerate(method):
+
             if i + 1 < len(method):
+
                 next = method[i + 1]
-                if next in self.tokens and self.tokens[next]["indents"] < 0:
+
+                if c + next in self.tokens:
+
+                    prettified_method += c
+
+                elif next in self.tokens and self.tokens[next]["indents"] < 0:
+
                     tabs = self.delete_tabs(tabs, self.tokens[next]["indents"])
                     prettified_method += c + "\n" + tabs.expandtabs(4)
+
                 elif c in self.tokens and self.tokens[c]["indents"] >= 0:
+
                     tabs = self.insert_tabs(tabs, self.tokens[c]["indents"])
                     prettified_method += c + "\n" + tabs.expandtabs(4)
+
                 else:
+
                     prettified_method += c
+
             else: prettified_method += c
 
         return prettified_method

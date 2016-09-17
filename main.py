@@ -4,6 +4,7 @@ from threading import Thread
 from generators.angular.js.AngularJSAdminControllerGenerator import AngularJSAdminControllerGenerator
 from generators.angular.js.AngularJSAppendCredentialsServiceGenerator import AngularJSAppendCredentialsServiceGenerator
 from generators.angular.js.AngularJSFactoryGenerator import AngularJSFactoryGenerator
+from generators.angular.js.AngularJSMainControllerGenerator import AngularJSMainControllerGenerator
 from generators.angular.js.AngularJSSendObjectServiceGenerator import AngularJSSendObjectServiceGenerator
 from generators.php.PhpControllerGenerator import PhpControllerGenerator
 
@@ -23,7 +24,7 @@ def generate_angular(data):
         angular_js_factory_generator = AngularJSFactoryGenerator(table, "angular/js/services/")
         factory_thread = Thread(None, target=angular_js_factory_generator.generate)
 
-        admin_controller_generator = AngularJSAdminControllerGenerator(table, "angular/js/controllers")
+        admin_controller_generator = AngularJSAdminControllerGenerator(table, "angular/js/controllers/")
         controller_thread = Thread(None, target=admin_controller_generator.generate)
 
         threads.append(factory_thread)
@@ -34,15 +35,19 @@ def generate_angular(data):
 
     send_object_service_generator = AngularJSSendObjectServiceGenerator("angular/js/services/")
     append_credentials_service_generator = AngularJSAppendCredentialsServiceGenerator("angular/js/services/")
+    main_controller_generator = AngularJSMainControllerGenerator(data, "angular/js/controllers/")
 
     send_object_thread = Thread(None, target=send_object_service_generator.generate)
     append_credentials_thread = Thread(None, target=append_credentials_service_generator.generate)
+    main_controller_thread = Thread(None, target=main_controller_generator.generate)
 
     threads.append(send_object_thread)
     threads.append(append_credentials_thread)
+    threads.append(main_controller_thread)
 
     send_object_thread.start()
     append_credentials_thread.start()
+    main_controller_thread.start()
 
     for thread in threads:
         thread.join()

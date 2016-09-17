@@ -1,7 +1,6 @@
 import os
 
 from generators.Generator import Generator
-from generators.angular.js.AngularJSGenerator import AngularJSGenerator
 
 
 class AngularJSSendObjectServiceGenerator(Generator):

@@ -1,3 +1,5 @@
+import re
+
 from generators.MethodFormatter import MethodFormatter
 
 
@@ -11,7 +13,7 @@ class JavaScriptFunction():
         self.first_parameter = True
 
     def retrieve(self):
-        function = "{name} = function({parameters}) {{{body}}}".format(name=self.function_name,
+        function = "{name} = function({parameters}) {{{body}}};".format(name=self.function_name,
                                                                        parameters=self.parameters,
                                                                        body=self.function_body)
 
@@ -20,16 +22,24 @@ class JavaScriptFunction():
 
         return function
 
+    def append_to_body(self, string_to_append):
+        self.function_body += string_to_append
+
     def get_function_call(self, parameters):
-        function_signature = self.function_name.split("=")[0]
-        function_signature = function_signature.split(" ")[1]
-        function_signature += "({parameters})".format(parameters=parameters)
+
+        function_signature = self.function_name
+
+        match = re.match(".*\s(.*)", self.function_name)
+        if match:
+            function_signature = match.group(1)
+
+        function_signature += "({parameters});".format(parameters=parameters)
 
         return function_signature
 
     def add_useful_call_parameter(self, parameter):
 
-        if self.first_parameter == True:
+        if self.first_parameter:
             self.first_parameter = False
         else:
             self.call_parameter += ", "
