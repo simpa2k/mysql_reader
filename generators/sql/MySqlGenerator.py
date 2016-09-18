@@ -3,9 +3,10 @@ from generators.Generator import Generator
 
 
 class MySqlGenerator(Generator):
-    def __init__(self, table, output_directory):
+    def __init__(self, table, output_directory, output_file_name):
 
         super().__init__(output_directory)
+        self.output_file_name = output_file_name
         self.table_name = table['table name']
         self.fields = table['columns']
         self.primary_key = table['primary key']
@@ -71,6 +72,6 @@ class MySqlGenerator(Generator):
 
         sql += ");\n"
 
-        os.makedirs('mysql', exist_ok=True)
-        with open('mysql/statements.sql', 'a') as statement_file:
+        os.makedirs(self.output_directory, exist_ok=True)
+        with open(self.output_directory + self.output_file_name, 'a') as statement_file:
             statement_file.write(sql)

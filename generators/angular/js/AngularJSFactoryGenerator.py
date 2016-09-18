@@ -1,6 +1,6 @@
 import os
 
-from generators.MethodFormatter import MethodFormatter
+from formatters.MethodFormatter import MethodFormatter
 from generators.angular.js.AngularJSGenerator import AngularJSGenerator
 
 

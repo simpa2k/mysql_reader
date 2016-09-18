@@ -1,6 +1,6 @@
 import re
 
-from generators.MethodFormatter import MethodFormatter
+from formatters.MethodFormatter import MethodFormatter
 
 
 class JavaScriptFunction():
@@ -13,6 +13,7 @@ class JavaScriptFunction():
         self.first_parameter = True
 
     def retrieve(self):
+
         function = "{name} = function({parameters}) {{{body}}};".format(name=self.function_name,
                                                                        parameters=self.parameters,
                                                                        body=self.function_body)

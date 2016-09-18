@@ -1,8 +1,7 @@
 import os
 
+from formatters.MethodFormatter import MethodFormatter
 from generators.php.PhpGenerator import PhpGenerator
-
-from generators.MethodFormatter import MethodFormatter
 from generators.php.PhpMethod import PhpMethod
 
 
@@ -114,9 +113,8 @@ class PhpModelGenerator(PhpGenerator):
                                update_method=update_method,
                                delete_method=delete_method)
 
-            directory = 'php/classes/models/'
-            os.makedirs(directory, exist_ok=True)
+            os.makedirs(self.output_directory, exist_ok=True)
 
-            with open(directory + class_name + '.php', 'w') as model_file:
+            with open(self.output_directory + class_name + '.php', 'w') as model_file:
                 model_file.write(data)
 

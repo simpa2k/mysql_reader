@@ -1,7 +1,7 @@
 import os
 
+from formatters.MethodFormatter import MethodFormatter
 from generators.Generator import Generator
-from generators.MethodFormatter import MethodFormatter
 
 
 class AngularJSMainControllerGenerator(Generator):

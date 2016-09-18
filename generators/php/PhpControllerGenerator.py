@@ -1,8 +1,7 @@
 import os
 
-from generators.MethodFormatter import MethodFormatter
+from formatters.MethodFormatter import MethodFormatter
 from generators.php.PhpGenerator import PhpGenerator
-
 from generators.php.PhpMethod import PhpMethod
 
 
@@ -65,10 +64,9 @@ class PhpControllerGenerator(PhpGenerator):
                                post_method=post_method,
                                put_method=put_method,
                                delete_method=delete_method)
-            
-            directory = 'php/classes/controllers/'
-            os.makedirs(directory, exist_ok=True)
 
-            with open(directory + class_name + '.php', 'w') as controller_file:
+            os.makedirs(self.output_directory, exist_ok=True)
+
+            with open(self.output_directory + class_name + '.php', 'w') as controller_file:
                 controller_file.write(data)
 

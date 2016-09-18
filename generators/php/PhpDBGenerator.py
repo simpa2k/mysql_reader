@@ -9,7 +9,6 @@ class PhpDBGenerator(Generator):
         with open('generators/php/templates/db_template.txt') as db_template:
             data = db_template.read()
 
-            directory = 'php/classes/'
-            os.makedirs(directory, exist_ok=True)
-            with open(directory + 'DB.php', 'w') as db_file:
+            os.makedirs(self.output_directory, exist_ok=True)
+            with open(self.output_directory + 'DB.php', 'w') as db_file:
                 db_file.write(data)

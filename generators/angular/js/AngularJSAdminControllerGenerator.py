@@ -1,5 +1,6 @@
 import os
 
+from formatters.RequireJSFormatter import RequireJSFormatter
 from generators.angular.js.AngularJSGenerator import AngularJSGenerator
 from generators.angular.js.JavaScriptFunction import JavaScriptFunction
 from generators.angular.js.JavaScriptVariable import JavaScriptVariable
@@ -224,14 +225,14 @@ class AngularJSAdminControllerGenerator(AngularJSGenerator):
                                                                          refresh_function,
                                                                          state_changing_function)
         else:
-            request_functions["post"] = JavaScriptFunction("", "", "")
+            request_functions["post"] = None
 
         if self.put:
             request_functions["put"] = self.construct_send_object_function("put",
                                                                          send_foreign_key_object_functions,
                                                                          refresh_function)
         else:
-            request_functions["put"] = JavaScriptFunction("", "", "")
+            request_functions["put"] = None
 
         if self.delete:
             request_functions["delete"] = self.construct_send_object_function("delete",
@@ -239,7 +240,7 @@ class AngularJSAdminControllerGenerator(AngularJSGenerator):
                                                                          refresh_function,
                                                                          state_changing_function)
         else:
-            request_functions["delete"] = JavaScriptFunction("", "", "")
+            request_functions["delete"] = None
 
         return request_functions
 
@@ -284,9 +285,9 @@ class AngularJSAdminControllerGenerator(AngularJSGenerator):
                                send_foreign_key_object_functions=send_foreign_key_object_functions,
                                endpoint=self.endpoint.retrieve_definition(),
                                refresh_function=refresh_function.retrieve(),
-                               post_object_function=request_functions["post"].retrieve(),
-                               put_object_function=request_functions["put"].retrieve(),
-                               delete_object_function=request_functions["delete"].retrieve(),
+                               post_object_function=request_functions["post"].retrieve() if request_functions["post"] is not None else "",
+                               put_object_function=request_functions["put"].retrieve() if request_functions["put"] is not None else "",
+                               delete_object_function=request_functions["delete"].retrieve() if request_functions["delete"] is not None else "",
                                get_foreign_key_object_function_calls=get_foreign_key_object_function_calls,
                                set_state_function_call=set_post_state_function.get_function_call(set_post_state_function.get_useful_call_parameter())
                                )
@@ -294,3 +295,6 @@ class AngularJSAdminControllerGenerator(AngularJSGenerator):
             os.makedirs(self.output_directory, exist_ok=True)
             with open(self.output_directory + controller_name + ".js", "w") as output_file:
                 output_file.write(data)
+
+            require_js_formatter = RequireJSFormatter(self.output_directory + controller_name + ".js")
+            require_js_formatter.format()
