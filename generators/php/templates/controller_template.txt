@@ -20,8 +20,7 @@ class {name} extends BaseController {{
     /**
      *
      * Method for handling GET
-     * requests. Currently does not handle
-     * more than one url element.
+     * requests.
      *
      * @param Request $request An object representing a request to be handled.
      *
@@ -30,7 +29,10 @@ class {name} extends BaseController {{
     public function getAction($request) {{
         
         if (isset($request->urlElements[2])) {{
-            /* Not implemented */
+
+            $qualifiedAction = "get" . ucfirst($request->urlElements[2]);
+            return $this->handleQuery($request, $qualifiedAction);
+
         }} else {{
             return $this->handleQuery($request);
         }}

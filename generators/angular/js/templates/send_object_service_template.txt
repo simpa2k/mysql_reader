@@ -1,4 +1,4 @@
-var app = angular.module('vilde');
+var app = angular.module('coreModule');
 
 app.service('SendObjectService', ['$http', function($http) {
     var self = this;

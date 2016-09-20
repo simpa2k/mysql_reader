@@ -63,16 +63,26 @@ abstract class BaseController {
      *
      */
 
-    public function handleQuery($request) {
+    public function handleQuery($request, $qualifiedAction = "") {
+
+        if(!empty($qualifiedAction)) {
+
+            $qualifiedAction = ucfirst($qualifiedAction);
+
+        }
 
         if($request->parameters) {
 
-            $results = $this->model->get($this->formatParameters($request->parameters));
+            $method = "get" . $qualifiedAction;
+
+            $results = $this->model->$method($this->formatParameters($request->parameters));
             return $results;
 
         } else {
 
-            return $this->model->getAll();
+            $method = "getAll" . $qualifiedAction;
+
+            return $this->model->$method();
 
         }
 

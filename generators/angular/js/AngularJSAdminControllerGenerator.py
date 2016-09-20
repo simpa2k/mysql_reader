@@ -291,10 +291,13 @@ class AngularJSAdminControllerGenerator(AngularJSGenerator):
                                get_foreign_key_object_function_calls=get_foreign_key_object_function_calls,
                                set_state_function_call=set_post_state_function.get_function_call(set_post_state_function.get_useful_call_parameter())
                                )
+            require_js_formatter = RequireJSFormatter(data)
+            data = require_js_formatter.format()
 
             os.makedirs(self.output_directory, exist_ok=True)
             with open(self.output_directory + controller_name + ".js", "w") as output_file:
                 output_file.write(data)
 
-            require_js_formatter = RequireJSFormatter(self.output_directory + controller_name + ".js")
-            require_js_formatter.format()
+            #require_js_formatter = RequireJSFormatter(self.output_directory + controller_name + ".js",
+                                                      #self.output_directory)
+            #require_js_formatter.format()

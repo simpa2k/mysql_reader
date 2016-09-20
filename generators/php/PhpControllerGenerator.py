@@ -33,6 +33,26 @@ class PhpControllerGenerator(PhpGenerator):
 
         return column_variables + primary_key_variable + unset_statement + update_statement
 
+    def construct_delete_method_body(self):
+
+        primary_key_columns = ""
+
+        first = True
+        for column in self.primary_key:
+
+            if first:
+                first = False
+            else:
+                primary_key_columns += ', '
+
+            primary_key_columns += "'{}'".format(column)
+
+        primary_key_variable = "$primaryKey = $this->filterParameters(array({primary_key_columns}), $request->parameters);".\
+            format(primary_key_columns=primary_key_columns)
+        model_function_call = "$this->getModel()->delete($this->formatParameters($primaryKey));"
+
+        return primary_key_variable + model_function_call
+
     def construct_method_signatures_and_bodies(self):
         base_method_signature = "public function {request_type}($request)"
 
@@ -42,7 +62,7 @@ class PhpControllerGenerator(PhpGenerator):
 
         self.post_method_body = "$this->getModel()->insert($request->parameters);" if self.post else self.unimplementedMethodPlaceholder
         self.put_method_body = self.construct_put_method_body() if self.put else self.unimplementedMethodPlaceholder
-        self.delete_method_body = "$id = $this->filterParameters(array('id'), $request->parameters);$this->getModel()->delete($this->formatParameters($id));" if self.delete else self.unimplementedMethodPlaceholder
+        self.delete_method_body = self.construct_delete_method_body() if self.delete else self.unimplementedMethodPlaceholder
 
     def generate(self):
         with open('generators/php/templates/controller_template.txt', 'r') as controller_template:

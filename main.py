@@ -15,6 +15,7 @@ from generators.php.PhpBaseControllerGenerator import PhpBaseControllerGenerator
 from generators.php.PhpBaseModelGenerator import PhpBaseModelGenerator
 from generators.php.PhpConfigGenerator import PhpConfigGenerator
 from generators.php.PhpDBGenerator import PhpDBGenerator
+from generators.php.PhpHardCodedFileGenerator import PhpHardCodedFileGenerator
 from generators.php.PhpModelGenerator import PhpModelGenerator
 from generators.sql.MySqlGenerator import MySqlGenerator
 from readers.JsonReader import JsonReader
@@ -74,15 +75,21 @@ def generate_php(data, output_path):
 
     base_controller_generator = PhpBaseControllerGenerator(output_path + "classes/controllers/")
     base_model_generator = PhpBaseModelGenerator(output_path + "classes/controllers/")
+    gallery_generator = PhpHardCodedFileGenerator("generators/php/templates/gallery_template.txt",
+                                                  "Gallery",
+                                                  output_path + "classes/")
 
     base_controller_thread = Thread(None, target=base_controller_generator.generate)
     base_model_thread = Thread(None, target=base_model_generator.generate)
+    gallery_generator_thread = Thread(None, target=gallery_generator.generate)
 
     threads.append(base_controller_thread)
     threads.append(base_model_thread)
+    threads.append(gallery_generator_thread)
 
     base_controller_thread.start()
     base_model_thread.start()
+    gallery_generator_thread.start()
 
     if data['config'] is not None:
         config_generator = PhpConfigGenerator(data['config'], output_path)

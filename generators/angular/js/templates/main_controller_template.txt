@@ -4,4 +4,6 @@ app.controller('MainController', function({dependencies}) {{
 
     {get_data_functions}
 
+    {trust_url_function}
+
 }});

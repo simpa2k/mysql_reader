@@ -1,0 +1,21 @@
+{
+    "config": {
+        "host": "127.0.0.1",
+        "username": "root",
+        "password": "m432LzR33PQsaH",
+        "db": "spoketikoket_new"
+    },
+  "tables": [{
+    "name": "contactperson",
+    "plural": "true",
+    "post": "true",
+    "put": "true",
+    "delete": "true",
+    "fields": {
+        "phonenumber": "VARCHAR(20) NOT NULL",
+        "name": "VARCHAR(60) NOT NULL",
+        "country": "VARCHAR(10)"
+    },
+    "primary key": ["phonenumber", "name", "country"]
+  }]
+}

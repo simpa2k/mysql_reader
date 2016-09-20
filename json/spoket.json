@@ -96,6 +96,19 @@
 
 			},
 			"primary key": ["id"]
+		},
+		{
+			"name": "embeddeditem",
+			"plural": "true",
+			"post": "true",
+			"put": "true",
+			"delete": "true",
+			"fields": {
+				"id": "INT NOT NULL AUTO_INCREMENT",
+				"src": "TEXT"
+			},
+			"primary key": ["id"]
 		}
+
 	]
 }

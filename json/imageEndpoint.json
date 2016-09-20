@@ -1,0 +1,14 @@
+{
+  "tables": [{
+      "name": "image",
+      "plural": "true",
+      "post": "true",
+      "put": "true",
+      "delete": "true",
+      "fields": {
+          "imagepath": "TEXT",
+          "thumbnailpath": "TEXT"
+      },
+      "primary key": ["imagepath", "thumbnailpath"]
+  }]
+}

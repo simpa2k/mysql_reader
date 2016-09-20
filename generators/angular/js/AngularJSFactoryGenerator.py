@@ -1,6 +1,7 @@
 import os
 
 from formatters.MethodFormatter import MethodFormatter
+from formatters.RequireJSFormatter import RequireJSFormatter
 from generators.angular.js.AngularJSGenerator import AngularJSGenerator
 
 
@@ -45,7 +46,11 @@ class AngularJSFactoryGenerator(AngularJSGenerator):
         return dependencies
 
     def construct_promise(self):
-        return "promise = $http.get({endpointName}).then(function(response) {{return response.data}});".format(endpointName=self.endpoint.retrieve_reference())
+
+        index = "[0]" if not self.plural else ""
+        return "promise = $http.get({endpointName}).then(function(response) {{return response.data{index}}});".\
+            format(endpointName=self.endpoint.retrieve_reference(),
+                   index=index)
 
     def construct_get_function(self):
         return "get{uppercase_table_name}: function() {{if(!promise) {{{promise}}} return promise;}}".format(uppercase_table_name=self.construct_uppercase_name(""),
@@ -77,6 +82,9 @@ class AngularJSFactoryGenerator(AngularJSGenerator):
                                          dependencies=dependencies,
                                          endpoint=self.endpoint.retrieve_definition(),
                                          factory_variable=factory_variable)
+
+            require_js_formatter = RequireJSFormatter(formatted_data)
+            formatted_data = require_js_formatter.format()
 
             os.makedirs(self.output_directory, exist_ok=True)
 
